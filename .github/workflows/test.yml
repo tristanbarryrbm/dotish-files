@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - GHA
+
+jobs:
+  deploy_cdk_apps:
+    strategy:
+      matrix:
+        cdk_app: ["common"]
+    runs-on: ubuntu-latest
+    permissions:
+      # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+      id-token: write
+      contents: read
+    steps:
+      - name: Output a value
+        id: production_cdk_diff
+        run: echo "::set-output name=has_diff::100"
+      - name: Output another value
+        id: staging_cdk_diff
+        run: echo "::set-output name=has_diff::100"
+      - name: Deploy to Pipeline
+        run: >
+          env
+          echo steps.staging_cdk_diff.has_diff value: ${{ steps.staging_cdk_diff.has_diff }}
